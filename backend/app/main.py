@@ -31,11 +31,12 @@ app.add_middleware(
 articles_cache: List[Article] = []
 insights_cache: Insights = None
 last_fetch_time: datetime = None
-FETCH_INTERVAL = 600  # 10 minutes in seconds
+FETCH_INTERVAL = 3600  # 1 hour in seconds
+MAX_ARTICLES = 1000  # Keep last 1000 articles to prevent unlimited growth
 
 
 async def update_news_cache():
-    """Background task to periodically fetch news"""
+    """Background task to periodically fetch news and accumulate articles"""
     global articles_cache, insights_cache, last_fetch_time
 
     while True:
@@ -43,15 +44,33 @@ async def update_news_cache():
             logger.info("Starting news fetch cycle...")
 
             # Fetch all feeds
-            articles = fetch_all_feeds()
-            articles_cache = articles
+            new_articles = fetch_all_feeds()
 
-            # Generate insights
-            if articles:
-                insights_cache = generate_insights(articles)
+            # Merge new articles with existing ones
+            # Create a dictionary of existing articles by ID
+            existing_ids = {article.id for article in articles_cache}
+
+            # Add only new articles (not already in cache)
+            added_count = 0
+            for article in new_articles:
+                if article.id not in existing_ids:
+                    articles_cache.append(article)
+                    added_count += 1
+
+            # Sort by published date (newest first)
+            articles_cache.sort(key=lambda x: x.published_at, reverse=True)
+
+            # Keep only the most recent MAX_ARTICLES
+            if len(articles_cache) > MAX_ARTICLES:
+                articles_cache = articles_cache[:MAX_ARTICLES]
+
+            logger.info(f"Added {added_count} new articles. Total articles: {len(articles_cache)}")
+
+            # Generate insights on all accumulated articles
+            if articles_cache:
+                insights_cache = generate_insights(articles_cache)
 
             last_fetch_time = datetime.now(timezone.utc)
-            logger.info(f"News cache updated. Total articles: {len(articles_cache)}")
 
         except Exception as e:
             logger.error(f"Error updating news cache: {e}")
@@ -182,17 +201,34 @@ async def refresh_data():
 
         logger.info("Manual refresh triggered")
 
-        articles = fetch_all_feeds()
-        articles_cache = articles
+        # Fetch new articles
+        new_articles = fetch_all_feeds()
 
-        if articles:
-            insights_cache = generate_insights(articles)
+        # Merge with existing articles (same logic as background task)
+        existing_ids = {article.id for article in articles_cache}
+        added_count = 0
+        for article in new_articles:
+            if article.id not in existing_ids:
+                articles_cache.append(article)
+                added_count += 1
+
+        # Sort by published date (newest first)
+        articles_cache.sort(key=lambda x: x.published_at, reverse=True)
+
+        # Keep only the most recent MAX_ARTICLES
+        if len(articles_cache) > MAX_ARTICLES:
+            articles_cache = articles_cache[:MAX_ARTICLES]
+
+        # Generate insights
+        if articles_cache:
+            insights_cache = generate_insights(articles_cache)
 
         last_fetch_time = datetime.now(timezone.utc)
 
         return {
             "status": "success",
-            "articles_fetched": len(articles_cache),
+            "new_articles_added": added_count,
+            "total_articles": len(articles_cache),
             "timestamp": last_fetch_time.isoformat()
         }
 

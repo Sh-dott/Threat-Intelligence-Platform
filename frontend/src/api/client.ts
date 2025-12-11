@@ -1,5 +1,6 @@
 import { Article, Insights } from '../types';
 
+// Use env var or default to localhost:8000
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export async function fetchNews(
