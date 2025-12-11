@@ -41,7 +41,7 @@ app.add_middleware(
 articles_cache: List[Article] = []
 insights_cache: Insights = None
 last_fetch_time: datetime = None
-FETCH_INTERVAL = 3600  # 1 hour in seconds
+FETCH_INTERVAL = 1800  # 30 minutes in seconds (real-time updates every 30 min)
 MAX_ARTICLES = 5000  # Keep last 5000 articles to prevent unlimited growth
 
 
@@ -140,7 +140,7 @@ def health_check():
 
 @app.get("/api/news", response_model=List[Article])
 def get_news(
-    limit: int = 500,
+    limit: int = 2000,
     threat_type: str = None,
     search: str = None
 ):
@@ -148,7 +148,7 @@ def get_news(
     Get normalized news articles
 
     Parameters:
-    - limit: Maximum number of articles to return (default: 500)
+    - limit: Maximum number of articles to return (default: 2000)
     - threat_type: Filter by threat type (optional)
     - search: Search in title and summary (optional)
     """
