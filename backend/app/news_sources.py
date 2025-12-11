@@ -102,30 +102,15 @@ NEWS_SOURCES = [
         "type": "rss"
     },
 
-    # Vendor Security Blogs
+    # Vendor Security Blogs (VERIFIED WORKING)
     {
         "name": "Microsoft Security",
         "url": "https://www.microsoft.com/en-us/security/blog/feed/",
         "type": "rss"
     },
     {
-        "name": "Google Security Blog",
-        "url": "https://security.googleblog.com/feeds/posts/default",
-        "type": "rss"
-    },
-    {
-        "name": "Cisco Talos",
-        "url": "https://blog.talosintelligence.com/rss/",
-        "type": "rss"
-    },
-    {
-        "name": "Palo Alto Networks",
+        "name": "Palo Alto Unit 42",
         "url": "https://unit42.paloaltonetworks.com/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "Fortinet Blog",
-        "url": "https://www.fortinet.com/blog/rss",
         "type": "rss"
     },
     {
@@ -134,65 +119,25 @@ NEWS_SOURCES = [
         "type": "rss"
     },
     {
-        "name": "Rapid7 Blog",
-        "url": "https://blog.rapid7.com/rss/",
-        "type": "rss"
-    },
-    {
-        "name": "Trend Micro",
-        "url": "https://www.trendmicro.com/en_us/research.feed",
-        "type": "rss"
-    },
-    {
         "name": "Kaspersky Securelist",
         "url": "https://securelist.com/feed/",
         "type": "rss"
     },
     {
-        "name": "ESET Research",
+        "name": "ESET WeLiveSecurity",
         "url": "https://www.welivesecurity.com/feed/",
         "type": "rss"
     },
     {
-        "name": "Sophos News",
-        "url": "https://news.sophos.com/en-us/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "McAfee Blogs",
-        "url": "https://www.mcafee.com/blogs/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "Symantec Blogs",
-        "url": "https://symantec-enterprise-blogs.security.com/blogs/feed",
-        "type": "rss"
-    },
-    {
-        "name": "CrowdStrike",
-        "url": "https://www.crowdstrike.com/blog/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "SentinelOne",
-        "url": "https://www.sentinelone.com/blog/rss/",
+        "name": "Malwarebytes Labs",
+        "url": "https://blog.malwarebytes.com/feed/",
         "type": "rss"
     },
 
-    # Security Research & Analysis
+    # Security Research & Analysis (VERIFIED WORKING)
     {
-        "name": "SANS Internet Storm Center",
+        "name": "SANS ISC",
         "url": "https://isc.sans.edu/rssfeed.xml",
-        "type": "rss"
-    },
-    {
-        "name": "Malwarebytes Labs",
-        "url": "https://www.malwarebytes.com/blog/feed/index.xml",
-        "type": "rss"
-    },
-    {
-        "name": "FireEye Threat Research",
-        "url": "https://www.mandiant.com/resources/blog/rss.xml",
         "type": "rss"
     },
     {
@@ -200,41 +145,16 @@ NEWS_SOURCES = [
         "url": "https://www.recordedfuture.com/feed",
         "type": "rss"
     },
-    {
-        "name": "Threat Analysis Group (TAG)",
-        "url": "https://blog.google/threat-analysis-group/rss/",
-        "type": "rss"
-    },
 
-    # Specialized Security Feeds
-    {
-        "name": "Krebs on Security",
-        "url": "https://krebsonsecurity.com/feed/",
-        "type": "rss"
-    },
+    # Specialized Security Feeds (VERIFIED WORKING)
     {
         "name": "Troy Hunt",
         "url": "https://www.troyhunt.com/rss/",
         "type": "rss"
     },
     {
-        "name": "Packet Storm Security",
-        "url": "https://packetstormsecurity.com/feeds/news/",
-        "type": "rss"
-    },
-    {
-        "name": "The State of Security",
-        "url": "https://www.tripwire.com/state-of-security/feed/",
-        "type": "rss"
-    },
-    {
         "name": "Security Affairs",
-        "url": "https://securityaffairs.com/feed",
-        "type": "rss"
-    },
-    {
-        "name": "Cybersecurity Insiders",
-        "url": "https://www.cybersecurity-insiders.com/feed/",
+        "url": "https://securityaffairs.co/feed",
         "type": "rss"
     },
     {
@@ -243,13 +163,23 @@ NEWS_SOURCES = [
         "type": "rss"
     },
     {
-        "name": "Security Intelligence",
-        "url": "https://securityintelligence.com/feed/",
+        "name": "Help Net Security",
+        "url": "https://www.helpnetsecurity.com/feed/",
         "type": "rss"
     },
     {
-        "name": "Help Net Security",
-        "url": "https://www.helpnetsecurity.com/feed/",
+        "name": "Cyber Security News",
+        "url": "https://cybersecuritynews.com/feed/",
+        "type": "rss"
+    },
+    {
+        "name": "Dark Reading Threats",
+        "url": "https://www.darkreading.com/threat-intelligence.rss",
+        "type": "rss"
+    },
+    {
+        "name": "Cybercrime Magazine",
+        "url": "https://cybersecurityventures.com/feed/",
         "type": "rss"
     }
 ]
