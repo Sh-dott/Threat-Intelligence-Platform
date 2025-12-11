@@ -1,0 +1,201 @@
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from typing import List
+import asyncio
+from datetime import datetime, timezone
+import logging
+
+from .models import Article, Insights
+from .news_sources import fetch_all_feeds
+from .insights import generate_insights
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+app = FastAPI(
+    title="Threat Intelligence Platform API",
+    description="Real-time threat intelligence news aggregation and analysis",
+    version="1.0.0"
+)
+
+# CORS configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173", "http://127.0.0.1:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# In-memory cache
+articles_cache: List[Article] = []
+insights_cache: Insights = None
+last_fetch_time: datetime = None
+FETCH_INTERVAL = 600  # 10 minutes in seconds
+
+
+async def update_news_cache():
+    """Background task to periodically fetch news"""
+    global articles_cache, insights_cache, last_fetch_time
+
+    while True:
+        try:
+            logger.info("Starting news fetch cycle...")
+
+            # Fetch all feeds
+            articles = fetch_all_feeds()
+            articles_cache = articles
+
+            # Generate insights
+            if articles:
+                insights_cache = generate_insights(articles)
+
+            last_fetch_time = datetime.now(timezone.utc)
+            logger.info(f"News cache updated. Total articles: {len(articles_cache)}")
+
+        except Exception as e:
+            logger.error(f"Error updating news cache: {e}")
+
+        # Wait for next fetch cycle
+        await asyncio.sleep(FETCH_INTERVAL)
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize cache on startup"""
+    logger.info("Starting Threat Intelligence Platform API...")
+
+    # Do initial fetch synchronously to have data ready
+    try:
+        logger.info("Performing initial news fetch...")
+        global articles_cache, insights_cache, last_fetch_time
+
+        articles = fetch_all_feeds()
+        articles_cache = articles
+
+        if articles:
+            insights_cache = generate_insights(articles)
+
+        last_fetch_time = datetime.now(timezone.utc)
+        logger.info(f"Initial fetch complete. Total articles: {len(articles_cache)}")
+
+    except Exception as e:
+        logger.error(f"Error during initial fetch: {e}")
+
+    # Start background task
+    asyncio.create_task(update_news_cache())
+
+
+@app.get("/")
+def read_root():
+    """Root endpoint"""
+    return {
+        "name": "Threat Intelligence Platform API",
+        "version": "1.0.0",
+        "status": "operational",
+        "last_update": last_fetch_time.isoformat() if last_fetch_time else None,
+        "total_articles": len(articles_cache)
+    }
+
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "articles_count": len(articles_cache),
+        "last_fetch": last_fetch_time.isoformat() if last_fetch_time else None
+    }
+
+
+@app.get("/api/news", response_model=List[Article])
+def get_news(
+    limit: int = 100,
+    threat_type: str = None,
+    search: str = None
+):
+    """
+    Get normalized news articles
+
+    Parameters:
+    - limit: Maximum number of articles to return (default: 100)
+    - threat_type: Filter by threat type (optional)
+    - search: Search in title and summary (optional)
+    """
+    try:
+        articles = articles_cache.copy()
+
+        # Apply filters
+        if threat_type:
+            articles = [a for a in articles if a.threat_type == threat_type]
+
+        if search:
+            search_lower = search.lower()
+            articles = [
+                a for a in articles
+                if search_lower in a.title.lower() or search_lower in a.summary.lower()
+            ]
+
+        # Apply limit
+        articles = articles[:limit]
+
+        return articles
+
+    except Exception as e:
+        logger.error(f"Error getting news: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/insights", response_model=Insights)
+def get_insights():
+    """
+    Get intelligence insights and trends
+
+    Returns computed statistics about threat types, entities, and geographies
+    """
+    try:
+        if insights_cache is None:
+            raise HTTPException(
+                status_code=503,
+                detail="Insights not yet available. Please try again in a moment."
+            )
+
+        return insights_cache
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting insights: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/refresh")
+async def refresh_data():
+    """
+    Manually trigger a data refresh
+
+    Useful for testing or forcing an immediate update
+    """
+    try:
+        global articles_cache, insights_cache, last_fetch_time
+
+        logger.info("Manual refresh triggered")
+
+        articles = fetch_all_feeds()
+        articles_cache = articles
+
+        if articles:
+            insights_cache = generate_insights(articles)
+
+        last_fetch_time = datetime.now(timezone.utc)
+
+        return {
+            "status": "success",
+            "articles_fetched": len(articles_cache),
+            "timestamp": last_fetch_time.isoformat()
+        }
+
+    except Exception as e:
+        logger.error(f"Error during manual refresh: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
