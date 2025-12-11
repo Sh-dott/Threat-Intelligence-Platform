@@ -27,7 +27,10 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "http://127.0.0.1:3000",
         "https://sh-dott.github.io",  # GitHub Pages
-        "https://*.herokuapp.com"  # Heroku backend
+        "https://*.herokuapp.com",  # Heroku backend
+        "https://*.vercel.app",  # Vercel deployments
+        "https://threat-intelligence-platform.vercel.app",  # Vercel frontend
+        "https://threat-intel-api.vercel.app"  # Vercel backend
     ],
     allow_credentials=True,
     allow_methods=["*"],
