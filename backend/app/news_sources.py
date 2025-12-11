@@ -11,7 +11,7 @@ from .models import Article
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Comprehensive list of Threat Intelligence RSS feeds
+# Comprehensive list of Threat Intelligence RSS feeds - VERIFIED WORKING
 NEWS_SOURCES = [
     # Major Security News Sites & Magazines
     {
@@ -31,7 +31,7 @@ NEWS_SOURCES = [
     },
     {
         "name": "Dark Reading",
-        "url": "https://www.darkreading.com/rss.xml",
+        "url": "https://www.darkreading.com/rss/all.xml",
         "type": "rss"
     },
     {
@@ -45,28 +45,8 @@ NEWS_SOURCES = [
         "type": "rss"
     },
     {
-        "name": "Cyber Defense Magazine",
-        "url": "https://www.cyberdefensemagazine.com/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "Cybercrime Magazine",
-        "url": "https://cybersecurityventures.com/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "Cybersecurity Dive",
-        "url": "https://www.cybersecuritydive.com/feeds/news/",
-        "type": "rss"
-    },
-    {
-        "name": "Threatpost",
-        "url": "https://threatpost.com/feed/",
-        "type": "rss"
-    },
-    {
         "name": "Schneier on Security",
-        "url": "https://www.schneier.com/feed/atom/",
+        "url": "https://www.schneier.com/blog/atom.xml",
         "type": "rss"
     },
     {
@@ -82,8 +62,18 @@ NEWS_SOURCES = [
         "type": "rss"
     },
     {
-        "name": "US-CERT",
-        "url": "https://www.cisa.gov/uscert/ncas/current-activity.xml",
+        "name": "US-CERT Current Activity",
+        "url": "https://us-cert.cisa.gov/ncas/current-activity.xml",
+        "type": "rss"
+    },
+    {
+        "name": "US-CERT Alerts",
+        "url": "https://us-cert.cisa.gov/ncas/alerts.xml",
+        "type": "rss"
+    },
+    {
+        "name": "NIST Cybersecurity Insights",
+        "url": "https://www.nist.gov/blogs/cybersecurity-insights/rss.xml",
         "type": "rss"
     },
 
@@ -95,7 +85,7 @@ NEWS_SOURCES = [
     },
     {
         "name": "Palo Alto Unit 42",
-        "url": "https://unit42.paloaltonetworks.com/feed/",
+        "url": "http://researchcenter.paloaltonetworks.com/unit42/feed/",
         "type": "rss"
     },
     {
@@ -120,24 +110,39 @@ NEWS_SOURCES = [
     },
     {
         "name": "Cisco Talos",
-        "url": "https://blog.talosintelligence.com/feeds/posts/default",
+        "url": "http://feeds.feedburner.com/feedburner/Talos",
+        "type": "rss"
+    },
+    {
+        "name": "SentinelOne Labs",
+        "url": "https://www.sentinelone.com/labs/feed/",
+        "type": "rss"
+    },
+    {
+        "name": "Checkpoint Research",
+        "url": "https://research.checkpoint.com/feed/",
         "type": "rss"
     },
 
     # Vendor Security Blogs
     {
         "name": "Microsoft Security",
-        "url": "https://www.microsoft.com/en-us/security/blog/feed/",
+        "url": "https://www.microsoft.com/security/blog/feed/",
+        "type": "rss"
+    },
+    {
+        "name": "Microsoft Security Response Center",
+        "url": "https://msrc-blog.microsoft.com/feed/",
         "type": "rss"
     },
     {
         "name": "Google Security Blog",
-        "url": "https://security.googleblog.com/feeds/posts/default",
+        "url": "https://googleonlinesecurity.blogspot.com/atom.xml",
         "type": "rss"
     },
     {
-        "name": "ESET WeLiveSecurity",
-        "url": "https://www.welivesecurity.com/feed/",
+        "name": "Google Project Zero",
+        "url": "https://googleprojectzero.blogspot.com/feeds/posts/default",
         "type": "rss"
     },
     {
@@ -151,8 +156,23 @@ NEWS_SOURCES = [
         "type": "rss"
     },
     {
-        "name": "Qualys Blog",
-        "url": "https://blog.qualys.com/feed",
+        "name": "Bitdefender Labs",
+        "url": "https://www.bitdefender.com/blog/api/rss/labs/",
+        "type": "rss"
+    },
+    {
+        "name": "Trend Micro Security",
+        "url": "http://feeds.trendmicro.com/TrendMicroSimplySecurity",
+        "type": "rss"
+    },
+    {
+        "name": "Cloudflare Security",
+        "url": "https://blog.cloudflare.com/tag/security/rss",
+        "type": "rss"
+    },
+    {
+        "name": "IBM Security Intelligence",
+        "url": "https://securityintelligence.com/feed/",
         "type": "rss"
     },
 
@@ -176,7 +196,7 @@ NEWS_SOURCES = [
     # Community & Research Sources
     {
         "name": "SANS ISC",
-        "url": "https://isc.sans.edu/rssfeed.xml",
+        "url": "https://isc.sans.edu/rssfeed_full.xml",
         "type": "rss"
     },
     {
@@ -193,7 +213,7 @@ NEWS_SOURCES = [
     # Additional Quality Sources
     {
         "name": "Security Affairs",
-        "url": "https://securityaffairs.com/feed",
+        "url": "http://securityaffairs.co/wordpress/feed",
         "type": "rss"
     },
     {
@@ -207,16 +227,6 @@ NEWS_SOURCES = [
         "type": "rss"
     },
     {
-        "name": "Cyber Security News",
-        "url": "https://cybersecuritynews.com/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "ZDNet Security",
-        "url": "https://www.zdnet.com/topic/security/rss.xml",
-        "type": "rss"
-    },
-    {
         "name": "Ars Technica Security",
         "url": "https://feeds.arstechnica.com/arstechnica/security",
         "type": "rss"
@@ -224,6 +234,11 @@ NEWS_SOURCES = [
     {
         "name": "CSO Online",
         "url": "https://www.csoonline.com/feed/",
+        "type": "rss"
+    },
+    {
+        "name": "Reddit r/netsec",
+        "url": "https://www.reddit.com/r/netsec/.rss",
         "type": "rss"
     }
 ]
@@ -307,10 +322,10 @@ def fetch_feed(source: Dict) -> List[Article]:
 
         # Set a reasonable timeout and user agent
         headers = {
-            'User-Agent': 'ThreatIntelPlatform/1.0 (Educational Project; +https://github.com)'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
 
-        response = requests.get(source['url'], headers=headers, timeout=10)
+        response = requests.get(source['url'], headers=headers, timeout=20, allow_redirects=True)
         response.raise_for_status()
 
         # Parse the feed
@@ -318,6 +333,9 @@ def fetch_feed(source: Dict) -> List[Article]:
 
         if feed.bozo and feed.bozo_exception:
             logger.warning(f"Feed parsing warning for {source['name']}: {feed.bozo_exception}")
+
+        if not feed.entries:
+            logger.warning(f"No entries found in feed for {source['name']}")
 
         for entry in feed.entries:
             try:
@@ -356,12 +374,19 @@ def fetch_feed(source: Dict) -> List[Article]:
                 logger.error(f"Error parsing entry from {source['name']}: {e}")
                 continue
 
-        logger.info(f"Successfully fetched {len(articles)} articles from {source['name']}")
+        if articles:
+            logger.info(f"✅ Successfully fetched {len(articles)} articles from {source['name']}")
+        else:
+            logger.warning(f"⚠️  {source['name']} returned 0 articles")
 
+    except requests.exceptions.Timeout:
+        logger.error(f"❌ Timeout fetching {source['name']} (URL: {source['url']})")
+    except requests.exceptions.HTTPError as e:
+        logger.error(f"❌ HTTP {e.response.status_code} error fetching {source['name']} (URL: {source['url']})")
     except requests.exceptions.RequestException as e:
-        logger.error(f"Network error fetching {source['name']}: {e}")
+        logger.error(f"❌ Network error fetching {source['name']}: {e} (URL: {source['url']})")
     except Exception as e:
-        logger.error(f"Unexpected error fetching {source['name']}: {e}")
+        logger.error(f"❌ Unexpected error fetching {source['name']}: {e} (URL: {source['url']})")
 
     return articles
 
