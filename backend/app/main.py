@@ -42,7 +42,7 @@ articles_cache: List[Article] = []
 insights_cache: Insights = None
 last_fetch_time: datetime = None
 FETCH_INTERVAL = 3600  # 1 hour in seconds
-MAX_ARTICLES = 1000  # Keep last 1000 articles to prevent unlimited growth
+MAX_ARTICLES = 5000  # Keep last 5000 articles to prevent unlimited growth
 
 
 async def update_news_cache():
@@ -140,7 +140,7 @@ def health_check():
 
 @app.get("/api/news", response_model=List[Article])
 def get_news(
-    limit: int = 100,
+    limit: int = 500,
     threat_type: str = None,
     search: str = None
 ):
@@ -148,7 +148,7 @@ def get_news(
     Get normalized news articles
 
     Parameters:
-    - limit: Maximum number of articles to return (default: 100)
+    - limit: Maximum number of articles to return (default: 500)
     - threat_type: Filter by threat type (optional)
     - search: Search in title and summary (optional)
     """
