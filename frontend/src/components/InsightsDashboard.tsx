@@ -83,10 +83,17 @@ export function InsightsDashboard({ insights, isLoading }: InsightsDashboardProp
             <h3 className="text-xl font-semibold text-white mb-4">Threat Type Distribution (Last 7 Days)</h3>
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                   <XAxis type="number" stroke="#9ca3af" />
-                  <YAxis dataKey="name" type="category" stroke="#9ca3af" width={140} tick={{ fill: '#9ca3af' }} />
+                  <YAxis
+                    dataKey="name"
+                    type="category"
+                    stroke="#9ca3af"
+                    width={180}
+                    tick={{ fill: '#e5e7eb', fontSize: 12 }}
+                    interval={0}
+                  />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#1f2937',

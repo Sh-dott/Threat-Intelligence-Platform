@@ -3,7 +3,7 @@ import { ArticleCard } from './components/ArticleCard';
 import { InsightsDashboard } from './components/InsightsDashboard';
 import { fetchNews, fetchInsights } from './api/client';
 import { Article, Insights } from './types';
-import { Search, Filter, RefreshCw, Shield, Activity } from 'lucide-react';
+import { Search, Filter, RefreshCw, Shield, Activity, Newspaper, BarChart3 } from 'lucide-react';
 
 function App() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -136,6 +136,35 @@ function App() {
         </div>
       </header>
 
+      {/* Quick Navigation Menu */}
+      <nav className="sticky top-0 z-40 bg-dark-800/95 backdrop-blur-sm border-b border-dark-600 shadow-lg">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-6 py-3 overflow-x-auto">
+            <a
+              href="#news"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-dark-700 transition-colors whitespace-nowrap text-gray-300 hover:text-white"
+            >
+              <Newspaper size={18} />
+              <span className="font-medium">Latest News</span>
+            </a>
+            <a
+              href="#insights"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-dark-700 transition-colors whitespace-nowrap text-gray-300 hover:text-white"
+            >
+              <BarChart3 size={18} />
+              <span className="font-medium">Intelligence Insights</span>
+            </a>
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-dark-700 transition-colors whitespace-nowrap text-gray-300 hover:text-white ml-auto"
+            >
+              <Activity size={18} />
+              <span className="font-medium">Back to Top</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
       <main className="container mx-auto px-4 py-8">
         {/* Stats Bar */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -186,7 +215,7 @@ function App() {
         )}
 
         {/* News Feed Section */}
-        <section className="mb-12">
+        <section id="news" className="mb-12 scroll-mt-20">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-white mb-2">Latest Threat Intelligence</h2>
             <p className="text-gray-400">
@@ -214,7 +243,9 @@ function App() {
         </section>
 
         {/* Insights Dashboard */}
-        <InsightsDashboard insights={insights} isLoading={insightsLoading} />
+        <div id="insights" className="scroll-mt-20">
+          <InsightsDashboard insights={insights} isLoading={insightsLoading} />
+        </div>
       </main>
 
       {/* Footer */}
