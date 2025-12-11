@@ -81,7 +81,7 @@ function App() {
   return (
     <div className="min-h-screen bg-dark-900 text-white">
       {/* Header */}
-      <header className="bg-dark-800 border-b border-dark-600 sticky top-0 z-50 shadow-lg">
+      <header className="bg-dark-800 border-b border-dark-600 shadow-lg">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
