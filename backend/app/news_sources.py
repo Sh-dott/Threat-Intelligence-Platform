@@ -13,15 +13,10 @@ logger = logging.getLogger(__name__)
 
 # Comprehensive list of Threat Intelligence RSS feeds
 NEWS_SOURCES = [
-    # Major Security News Sites
+    # Major Security News Sites & Magazines
     {
         "name": "BleepingComputer",
         "url": "https://www.bleepingcomputer.com/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "KrebsOnSecurity",
-        "url": "https://krebsonsecurity.com/feed/",
         "type": "rss"
     },
     {
@@ -30,8 +25,38 @@ NEWS_SOURCES = [
         "type": "rss"
     },
     {
+        "name": "SecurityWeek",
+        "url": "https://www.securityweek.com/feed/",
+        "type": "rss"
+    },
+    {
         "name": "Dark Reading",
-        "url": "https://www.darkreading.com/rss_simple.asp",
+        "url": "https://www.darkreading.com/rss.xml",
+        "type": "rss"
+    },
+    {
+        "name": "InfoSecurity Magazine",
+        "url": "https://www.infosecurity-magazine.com/rss/news/",
+        "type": "rss"
+    },
+    {
+        "name": "SC Magazine",
+        "url": "https://www.scmagazine.com/feed",
+        "type": "rss"
+    },
+    {
+        "name": "Cyber Defense Magazine",
+        "url": "https://www.cyberdefensemagazine.com/feed/",
+        "type": "rss"
+    },
+    {
+        "name": "Cybercrime Magazine",
+        "url": "https://cybersecurityventures.com/feed/",
+        "type": "rss"
+    },
+    {
+        "name": "Cybersecurity Dive",
+        "url": "https://www.cybersecuritydive.com/feeds/news/",
         "type": "rss"
     },
     {
@@ -40,48 +65,13 @@ NEWS_SOURCES = [
         "type": "rss"
     },
     {
-        "name": "SecurityWeek",
-        "url": "https://www.securityweek.com/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "The Record",
-        "url": "https://therecord.media/feed",
-        "type": "rss"
-    },
-    {
-        "name": "Naked Security",
-        "url": "https://nakedsecurity.sophos.com/feed/",
+        "name": "Schneier on Security",
+        "url": "https://www.schneier.com/feed/atom/",
         "type": "rss"
     },
     {
         "name": "Graham Cluley",
         "url": "https://grahamcluley.com/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "Schneier on Security",
-        "url": "https://www.schneier.com/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "Ars Technica Security",
-        "url": "https://feeds.arstechnica.com/arstechnica/security",
-        "type": "rss"
-    },
-    {
-        "name": "ZDNet Security",
-        "url": "https://www.zdnet.com/topic/security/rss.xml",
-        "type": "rss"
-    },
-    {
-        "name": "CSO Online",
-        "url": "https://www.csoonline.com/feed/",
-        "type": "rss"
-    },
-    {
-        "name": "InfoSecurity Magazine",
-        "url": "https://www.infosecurity-magazine.com/rss/news/",
         "type": "rss"
     },
 
@@ -92,20 +82,15 @@ NEWS_SOURCES = [
         "type": "rss"
     },
     {
-        "name": "US-CERT Alerts",
-        "url": "https://www.cisa.gov/uscert/ncas/alerts.xml",
-        "type": "rss"
-    },
-    {
-        "name": "CERT-EU",
-        "url": "https://cert.europa.eu/publications/security-advisories/feed.rss",
+        "name": "US-CERT",
+        "url": "https://www.cisa.gov/uscert/ncas/current-activity.xml",
         "type": "rss"
     },
 
-    # Vendor Security Blogs (VERIFIED WORKING)
+    # Threat Intelligence Focused Sources
     {
-        "name": "Microsoft Security",
-        "url": "https://www.microsoft.com/en-us/security/blog/feed/",
+        "name": "Recorded Future - The Record",
+        "url": "https://therecord.media/feed",
         "type": "rss"
     },
     {
@@ -114,13 +99,40 @@ NEWS_SOURCES = [
         "type": "rss"
     },
     {
-        "name": "Qualys Blog",
-        "url": "https://blog.qualys.com/feed",
+        "name": "CrowdStrike Blog",
+        "url": "https://www.crowdstrike.com/blog/feed/",
+        "type": "rss"
+    },
+    {
+        "name": "Mandiant",
+        "url": "https://www.mandiant.com/resources/blog/rss.xml",
+        "type": "rss"
+    },
+    {
+        "name": "Secureworks CTU",
+        "url": "https://www.secureworks.com/blog/rss",
         "type": "rss"
     },
     {
         "name": "Kaspersky Securelist",
         "url": "https://securelist.com/feed/",
+        "type": "rss"
+    },
+    {
+        "name": "Cisco Talos",
+        "url": "https://blog.talosintelligence.com/feeds/posts/default",
+        "type": "rss"
+    },
+
+    # Vendor Security Blogs
+    {
+        "name": "Microsoft Security",
+        "url": "https://www.microsoft.com/en-us/security/blog/feed/",
+        "type": "rss"
+    },
+    {
+        "name": "Google Security Blog",
+        "url": "https://security.googleblog.com/feeds/posts/default",
         "type": "rss"
     },
     {
@@ -133,28 +145,55 @@ NEWS_SOURCES = [
         "url": "https://blog.malwarebytes.com/feed/",
         "type": "rss"
     },
+    {
+        "name": "Sophos Naked Security",
+        "url": "https://nakedsecurity.sophos.com/feed/",
+        "type": "rss"
+    },
+    {
+        "name": "Qualys Blog",
+        "url": "https://blog.qualys.com/feed",
+        "type": "rss"
+    },
 
-    # Security Research & Analysis (VERIFIED WORKING)
+    # Newsletters & Daily Briefings
+    {
+        "name": "KrebsOnSecurity",
+        "url": "https://krebsonsecurity.com/feed/",
+        "type": "rss"
+    },
+    {
+        "name": "The CyberWire",
+        "url": "https://thecyberwire.com/feeds/rss.xml",
+        "type": "rss"
+    },
+    {
+        "name": "Risky Business",
+        "url": "https://risky.biz/feeds/risky-business/",
+        "type": "rss"
+    },
+
+    # Community & Research Sources
     {
         "name": "SANS ISC",
         "url": "https://isc.sans.edu/rssfeed.xml",
         "type": "rss"
     },
     {
-        "name": "Recorded Future",
-        "url": "https://www.recordedfuture.com/feed",
-        "type": "rss"
-    },
-
-    # Specialized Security Feeds (VERIFIED WORKING)
-    {
         "name": "Troy Hunt",
         "url": "https://www.troyhunt.com/rss/",
         "type": "rss"
     },
     {
+        "name": "Google TAG",
+        "url": "https://blog.google/threat-analysis-group/rss/",
+        "type": "rss"
+    },
+
+    # Additional Quality Sources
+    {
         "name": "Security Affairs",
-        "url": "https://securityaffairs.co/feed",
+        "url": "https://securityaffairs.com/feed",
         "type": "rss"
     },
     {
@@ -173,13 +212,18 @@ NEWS_SOURCES = [
         "type": "rss"
     },
     {
-        "name": "Dark Reading Threats",
-        "url": "https://www.darkreading.com/threat-intelligence.rss",
+        "name": "ZDNet Security",
+        "url": "https://www.zdnet.com/topic/security/rss.xml",
         "type": "rss"
     },
     {
-        "name": "Cybercrime Magazine",
-        "url": "https://cybersecurityventures.com/feed/",
+        "name": "Ars Technica Security",
+        "url": "https://feeds.arstechnica.com/arstechnica/security",
+        "type": "rss"
+    },
+    {
+        "name": "CSO Online",
+        "url": "https://www.csoonline.com/feed/",
         "type": "rss"
     }
 ]
