@@ -36,7 +36,7 @@ function App() {
       setLoading(true);
       setError(null);
 
-      const newsData = await fetchNews(2000, selectedThreatType || undefined, searchQuery || undefined);
+      const newsData = await fetchNews(10000, selectedThreatType || undefined, searchQuery || undefined);
       setArticles(newsData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load news');

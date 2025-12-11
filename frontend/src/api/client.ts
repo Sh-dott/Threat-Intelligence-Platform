@@ -4,7 +4,7 @@ import { Article, Insights } from '../types';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export async function fetchNews(
-  limit: number = 2000,
+  limit: number = 10000,
   threatType?: string,
   search?: string
 ): Promise<Article[]> {

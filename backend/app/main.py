@@ -140,7 +140,7 @@ def health_check():
 
 @app.get("/api/news", response_model=List[Article])
 def get_news(
-    limit: int = 2000,
+    limit: int = 10000,
     threat_type: str = None,
     search: str = None
 ):
@@ -148,7 +148,7 @@ def get_news(
     Get normalized news articles
 
     Parameters:
-    - limit: Maximum number of articles to return (default: 2000)
+    - limit: Maximum number of articles to return (default: 10000, effectively unlimited)
     - threat_type: Filter by threat type (optional)
     - search: Search in title and summary (optional)
     """
