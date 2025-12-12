@@ -34,7 +34,9 @@ THREAT_KEYWORDS = {
         "security update", "bug fix", "critical vulnerability", "remote code execution",
         "rce", "privilege escalation", "sql injection", "xss", "cross-site scripting",
         "code injection", "buffer overflow", "authentication bypass", "security patch",
-        "proof of concept", "poc exploit", "unpatched", "security advisory"
+        "proof of concept", "poc exploit", "unpatched", "security advisory", "weakness",
+        "software weakness", "dangerous weakness", "security issue", "security bug",
+        "critical flaw", "high severity", "medium severity", "low severity", "cvss"
     ],
     "ddos": [
         "ddos", "denial of service", "dos attack", "distributed denial", "ddos attack",
