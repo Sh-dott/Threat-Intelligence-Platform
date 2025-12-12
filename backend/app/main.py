@@ -7,7 +7,7 @@ import logging
 
 from .models import Article, Insights
 from .news_sources import fetch_all_feeds
-from .insights import generate_insights
+from .insights import generate_insights, classify_threat_type
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -76,6 +76,11 @@ async def update_news_cache():
 
             logger.info(f"Added {added_count} new articles. Total articles: {len(articles_cache)}")
 
+            # Re-classify all articles (in case classification rules were updated)
+            if articles_cache:
+                for article in articles_cache:
+                    article.threat_type = classify_threat_type(article)
+
             # Generate insights on all accumulated articles
             if articles_cache:
                 insights_cache = generate_insights(articles_cache)
@@ -102,7 +107,17 @@ async def startup_event():
         articles = fetch_all_feeds()
         articles_cache = articles
 
+        # Re-classify all articles with improved classification system
         if articles:
+            logger.info("Re-classifying all articles with improved threat detection...")
+            reclassified_count = 0
+            for article in articles_cache:
+                old_type = article.threat_type
+                article.threat_type = classify_threat_type(article)
+                if old_type != article.threat_type:
+                    reclassified_count += 1
+            logger.info(f"Re-classified {reclassified_count} articles with new categories")
+
             insights_cache = generate_insights(articles)
 
         last_fetch_time = datetime.now(timezone.utc)

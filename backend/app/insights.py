@@ -268,9 +268,7 @@ def compute_threat_stats(articles: List[Article]) -> List[ThreatTypeStat]:
 def generate_insights(articles: List[Article]) -> Insights:
     """Generate intelligence insights from articles"""
 
-    # Classify all articles
-    for article in articles:
-        article.threat_type = classify_threat_type(article)
+    # Note: Articles are now pre-classified when fetched, no need to re-classify here
 
     # Filter to last 7 days for insights
     now = datetime.now(timezone.utc)

@@ -7,6 +7,7 @@ import hashlib
 import logging
 from typing import List, Dict, Optional
 from .models import Article
+from .insights import classify_threat_type
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -367,6 +368,9 @@ def fetch_feed(source: Dict) -> List[Article]:
                     summary=summary,
                     image_url=image_url
                 )
+
+                # Classify threat type immediately when article is created
+                article.threat_type = classify_threat_type(article)
 
                 articles.append(article)
 
