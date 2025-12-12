@@ -8,17 +8,29 @@ interface InsightsDashboardProps {
 }
 
 const THREAT_TYPE_COLORS: Record<string, string> = {
-  ransomware: '#ef4444',
-  phishing: '#f97316',
-  data_breach: '#a855f7',
-  malware: '#ec4899',
-  vulnerability: '#eab308',
-  ddos: '#3b82f6',
-  apt: '#6366f1',
-  supply_chain: '#06b6d4',
-  crypto: '#10b981',
-  iot: '#14b8a6',
-  other: '#6b7280',
+  ransomware: '#ef4444',        // Red
+  phishing: '#f97316',          // Orange
+  data_breach: '#a855f7',       // Purple
+  malware: '#ec4899',           // Pink
+  vulnerability: '#eab308',     // Yellow
+  ddos: '#3b82f6',              // Blue
+  apt: '#6366f1',               // Indigo
+  supply_chain: '#06b6d4',      // Cyan
+  crypto: '#10b981',            // Green
+  iot: '#14b8a6',               // Teal
+  cloud_security: '#8b5cf6',    // Violet
+  social_engineering: '#f59e0b', // Amber
+  insider_threat: '#dc2626',    // Dark Red
+  mobile_security: '#059669',   // Emerald
+  ai_ml_security: '#7c3aed',    // Purple
+  web_security: '#2563eb',      // Blue
+  authentication: '#d97706',    // Orange
+  network_security: '#0891b2',  // Cyan
+  privacy: '#4f46e5',           // Indigo
+  incident_response: '#be123c', // Rose
+  email_security: '#ea580c',    // Orange
+  compliance: '#16a34a',        // Green
+  other: '#6b7280',             // Gray
 };
 
 export function InsightsDashboard({ insights, isLoading }: InsightsDashboardProps) {

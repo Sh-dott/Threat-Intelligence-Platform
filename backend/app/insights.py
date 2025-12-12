@@ -4,18 +4,139 @@ from collections import Counter
 import re
 from .models import Article, Insights, ThreatTypeStat, EntityMention, GeoStat
 
-# Threat type classification rules
+# Comprehensive threat type classification rules
 THREAT_KEYWORDS = {
-    "ransomware": ["ransomware", "ransom", "lockbit", "blackcat", "royal"],
-    "phishing": ["phishing", "spoofing", "credential harvesting", "fake login", "spear phishing"],
-    "data_breach": ["data breach", "database leak", "leak of", "records exposed", "data stolen", "breach of"],
-    "malware": ["malware", "trojan", "backdoor", "botnet", "spyware", "keylogger", "rat"],
-    "vulnerability": ["vulnerability", "zero-day", "cve-", "exploit", "patch", "security flaw"],
-    "ddos": ["ddos", "denial of service", "dos attack"],
-    "apt": ["apt", "advanced persistent threat", "nation-state", "state-sponsored"],
-    "supply_chain": ["supply chain", "third-party", "vendor compromise"],
-    "crypto": ["cryptocurrency", "crypto fraud", "bitcoin", "crypto scam", "wallet"],
-    "iot": ["iot", "internet of things", "smart device", "router exploit"]
+    "ransomware": [
+        "ransomware", "ransom", "lockbit", "blackcat", "royal", "conti", "revil", "darkside",
+        "ryuk", "sodinokibi", "maze", "ragnar", "hive", "alphv", "akira", "play ransomware",
+        "encryption attack", "double extortion", "ransom payment", "ransom demand"
+    ],
+    "phishing": [
+        "phishing", "spear phishing", "whaling", "spoofing", "credential harvesting",
+        "fake login", "phishing campaign", "phishing email", "email scam", "business email compromise",
+        "bec attack", "invoice fraud", "ceo fraud", "smishing", "vishing", "quishing",
+        "credential theft", "fake website", "lookalike domain", "typosquatting"
+    ],
+    "data_breach": [
+        "data breach", "database leak", "leak of", "records exposed", "data stolen", "breach of",
+        "data exfiltration", "stolen credentials", "exposed database", "leaked data",
+        "customer data breach", "pii exposed", "personally identifiable", "data dump",
+        "hacked database", "compromised data", "unauthorized access to data", "data theft"
+    ],
+    "malware": [
+        "malware", "trojan", "backdoor", "botnet", "spyware", "keylogger", "rat",
+        "remote access trojan", "infostealer", "stealer", "loader", "dropper",
+        "rootkit", "wiper", "virus", "worm", "banking trojan", "emotet", "qakbot",
+        "trickbot", "dridex", "icedid", "cobalt strike", "mimikatz", "redline stealer"
+    ],
+    "vulnerability": [
+        "vulnerability", "zero-day", "cve-", "exploit", "patch", "security flaw",
+        "security update", "bug fix", "critical vulnerability", "remote code execution",
+        "rce", "privilege escalation", "sql injection", "xss", "cross-site scripting",
+        "code injection", "buffer overflow", "authentication bypass", "security patch",
+        "proof of concept", "poc exploit", "unpatched", "security advisory"
+    ],
+    "ddos": [
+        "ddos", "denial of service", "dos attack", "distributed denial", "ddos attack",
+        "amplification attack", "reflection attack", "botnet attack", "flooding attack",
+        "service disruption", "availability attack", "ddos mitigation"
+    ],
+    "apt": [
+        "apt", "advanced persistent threat", "nation-state", "state-sponsored",
+        "apt group", "apt attack", "targeted attack", "espionage", "cyber espionage",
+        "lazarus", "fancy bear", "apt28", "apt29", "cozy bear", "kimsuky", "apt41",
+        "chinese hackers", "russian hackers", "north korean", "iranian hackers",
+        "state actor", "government-backed"
+    ],
+    "supply_chain": [
+        "supply chain", "third-party", "vendor compromise", "software supply chain",
+        "dependency attack", "compromised library", "npm attack", "pypi attack",
+        "supply chain attack", "third-party breach", "vendor security", "sbom",
+        "solarwinds", "codecov", "3cx", "msp attack", "managed service provider"
+    ],
+    "crypto": [
+        "cryptocurrency", "crypto fraud", "bitcoin", "crypto scam", "wallet",
+        "blockchain", "ethereum", "nft", "defi", "crypto theft", "crypto hack",
+        "exchange hack", "wallet drain", "rug pull", "crypto phishing",
+        "mining malware", "cryptojacking", "coinbase", "binance"
+    ],
+    "iot": [
+        "iot", "internet of things", "smart device", "router exploit", "router vulnerability",
+        "firmware vulnerability", "iot botnet", "mirai", "smart home", "connected device",
+        "industrial iot", "scada", "ics", "operational technology", "ot security",
+        "smart camera", "ip camera", "nvr", "dvr exploit"
+    ],
+    "cloud_security": [
+        "cloud security", "aws", "azure", "gcp", "google cloud", "cloud misconfiguration",
+        "s3 bucket", "exposed bucket", "cloud breach", "serverless", "lambda",
+        "kubernetes", "k8s", "docker", "container security", "cloud storage",
+        "saas security", "cloud access", "cloud vulnerability", "terraform"
+    ],
+    "social_engineering": [
+        "social engineering", "pretexting", "baiting", "tailgating", "quid pro quo",
+        "manipulation attack", "human error", "trust exploitation", "psychological manipulation",
+        "se attack", "vishing", "voice phishing", "phone scam", "impersonation"
+    ],
+    "insider_threat": [
+        "insider threat", "rogue employee", "insider attack", "employee theft",
+        "data exfiltration by employee", "privileged user", "insider risk",
+        "malicious insider", "negligent insider", "former employee", "contractor breach"
+    ],
+    "mobile_security": [
+        "mobile malware", "android malware", "ios malware", "mobile app",
+        "app vulnerability", "mobile banking trojan", "mobile phishing",
+        "app store", "google play", "mobile device", "smartphone attack",
+        "tablet security", "mobile threat", "pegasus", "spyware on phone"
+    ],
+    "ai_ml_security": [
+        "ai security", "machine learning", "deepfake", "synthetic media", "chatgpt",
+        "llm", "large language model", "prompt injection", "model poisoning",
+        "adversarial attack", "ai vulnerability", "automated attack", "ai-powered",
+        "chatbot security", "generative ai", "ai threat"
+    ],
+    "web_security": [
+        "xss", "cross-site scripting", "sql injection", "sqli", "csrf",
+        "cross-site request forgery", "web application", "webapp vulnerability",
+        "web exploit", "web shell", "file upload", "path traversal",
+        "directory traversal", "xxe", "xml external entity", "deserialization",
+        "web attack", "http vulnerability", "web server"
+    ],
+    "authentication": [
+        "authentication", "credential stuffing", "brute force", "password spray",
+        "password attack", "mfa bypass", "2fa bypass", "authentication bypass",
+        "session hijacking", "token theft", "oauth", "saml", "sso",
+        "password manager", "weak password", "default credentials", "credential access"
+    ],
+    "network_security": [
+        "network intrusion", "lateral movement", "network attack", "man in the middle",
+        "mitm", "arp spoofing", "dns hijacking", "network segmentation",
+        "vpn vulnerability", "firewall bypass", "network scanning", "port scan",
+        "network traffic", "packet sniffing", "network breach", "perimeter security"
+    ],
+    "privacy": [
+        "gdpr", "privacy violation", "data privacy", "personal data", "pii",
+        "ccpa", "privacy breach", "surveillance", "tracking", "data collection",
+        "consent violation", "privacy law", "data protection", "right to be forgotten",
+        "privacy policy", "user privacy", "metadata", "fingerprinting"
+    ],
+    "incident_response": [
+        "incident response", "breach response", "forensics", "digital forensics",
+        "incident handling", "cyber incident", "security incident", "breach notification",
+        "post-mortem", "root cause analysis", "containment", "eradication",
+        "recovery", "incident report", "breach investigation"
+    ],
+    "email_security": [
+        "email security", "spam", "email attack", "email spoofing", "dmarc",
+        "spf", "dkim", "email authentication", "malicious email", "email threat",
+        "email gateway", "email filter", "email phishing", "email compromise",
+        "email forwarding", "email exfiltration"
+    ],
+    "compliance": [
+        "compliance", "regulatory", "audit", "pci dss", "hipaa", "sox",
+        "iso 27001", "nist", "cis controls", "compliance violation",
+        "regulatory fine", "non-compliant", "security standard", "certification",
+        "framework", "baseline", "security control"
+    ]
 }
 
 # Known entities (companies, products, etc.)

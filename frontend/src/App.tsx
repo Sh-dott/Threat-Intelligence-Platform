@@ -15,7 +15,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedThreatType, setSelectedThreatType] = useState<string>('');
 
-  // Available threat types
+  // Available threat types (expanded classification)
   const threatTypes = [
     { value: '', label: 'All Types' },
     { value: 'ransomware', label: 'Ransomware' },
@@ -24,10 +24,22 @@ function App() {
     { value: 'malware', label: 'Malware' },
     { value: 'vulnerability', label: 'Vulnerability' },
     { value: 'ddos', label: 'DDoS' },
-    { value: 'apt', label: 'APT' },
+    { value: 'apt', label: 'APT / Nation-State' },
     { value: 'supply_chain', label: 'Supply Chain' },
-    { value: 'crypto', label: 'Crypto' },
-    { value: 'iot', label: 'IoT' },
+    { value: 'crypto', label: 'Crypto / Blockchain' },
+    { value: 'iot', label: 'IoT / OT' },
+    { value: 'cloud_security', label: 'Cloud Security' },
+    { value: 'social_engineering', label: 'Social Engineering' },
+    { value: 'insider_threat', label: 'Insider Threat' },
+    { value: 'mobile_security', label: 'Mobile Security' },
+    { value: 'ai_ml_security', label: 'AI/ML Security' },
+    { value: 'web_security', label: 'Web Security' },
+    { value: 'authentication', label: 'Authentication' },
+    { value: 'network_security', label: 'Network Security' },
+    { value: 'privacy', label: 'Privacy' },
+    { value: 'incident_response', label: 'Incident Response' },
+    { value: 'email_security', label: 'Email Security' },
+    { value: 'compliance', label: 'Compliance' },
     { value: 'other', label: 'Other' },
   ];
 
