@@ -4,6 +4,9 @@ from typing import List
 import asyncio
 from datetime import datetime, timezone
 import logging
+import json
+import os
+from pathlib import Path
 
 from .models import Article, Insights
 from .news_sources import fetch_all_feeds
@@ -37,12 +40,78 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Persistent storage configuration
+STORAGE_DIR = Path("data")
+ARTICLES_FILE = STORAGE_DIR / "articles_cache.json"
+
 # In-memory cache
 articles_cache: List[Article] = []
 insights_cache: Insights = None
 last_fetch_time: datetime = None
 FETCH_INTERVAL = 1800  # 30 minutes in seconds (real-time updates every 30 min)
-MAX_ARTICLES = 5000  # Keep last 5000 articles to prevent unlimited growth
+MAX_ARTICLES = 10000  # Keep last 10000 articles (increased to never lose articles)
+
+
+def save_articles_to_disk():
+    """Save articles cache to disk for persistence across restarts"""
+    try:
+        # Create data directory if it doesn't exist
+        STORAGE_DIR.mkdir(exist_ok=True)
+
+        # Convert articles to dict format
+        articles_data = [
+            {
+                "id": article.id,
+                "title": article.title,
+                "source": article.source,
+                "published_at": article.published_at.isoformat(),
+                "url": article.url,
+                "summary": article.summary,
+                "image_url": article.image_url,
+                "threat_type": article.threat_type
+            }
+            for article in articles_cache
+        ]
+
+        # Save to JSON file
+        with open(ARTICLES_FILE, 'w', encoding='utf-8') as f:
+            json.dump(articles_data, f, ensure_ascii=False, indent=2)
+
+        logger.info(f"Saved {len(articles_cache)} articles to disk")
+    except Exception as e:
+        logger.error(f"Error saving articles to disk: {e}")
+
+
+def load_articles_from_disk() -> List[Article]:
+    """Load articles from disk if available"""
+    try:
+        if not ARTICLES_FILE.exists():
+            logger.info("No cached articles found on disk, starting fresh")
+            return []
+
+        with open(ARTICLES_FILE, 'r', encoding='utf-8') as f:
+            articles_data = json.load(f)
+
+        # Convert back to Article objects
+        articles = []
+        for data in articles_data:
+            article = Article(
+                id=data["id"],
+                title=data["title"],
+                source=data["source"],
+                published_at=datetime.fromisoformat(data["published_at"]),
+                url=data["url"],
+                summary=data["summary"],
+                image_url=data.get("image_url"),
+                threat_type=data.get("threat_type", "other")
+            )
+            articles.append(article)
+
+        logger.info(f"Loaded {len(articles)} articles from disk")
+        return articles
+    except Exception as e:
+        logger.error(f"Error loading articles from disk: {e}")
+        return []
 
 
 async def update_news_cache():
@@ -87,6 +156,9 @@ async def update_news_cache():
 
             last_fetch_time = datetime.now(timezone.utc)
 
+            # Save articles to disk for persistence
+            save_articles_to_disk()
+
         except Exception as e:
             logger.error(f"Error updating news cache: {e}")
 
@@ -99,32 +171,57 @@ async def startup_event():
     """Initialize cache on startup"""
     logger.info("Starting Threat Intelligence Platform API...")
 
-    # Do initial fetch synchronously to have data ready
+    # Load existing articles from disk first
     try:
-        logger.info("Performing initial news fetch...")
+        logger.info("Loading cached articles from disk...")
         global articles_cache, insights_cache, last_fetch_time
 
-        articles = fetch_all_feeds()
-        articles_cache = articles
+        # Load previously saved articles
+        existing_articles = load_articles_from_disk()
+        existing_ids = {article.id for article in existing_articles}
+
+        logger.info(f"Loaded {len(existing_articles)} existing articles from disk")
+
+        # Fetch new articles from RSS feeds
+        logger.info("Fetching new articles from RSS feeds...")
+        new_articles = fetch_all_feeds()
+
+        # Merge: add only articles that aren't already in existing cache
+        added_count = 0
+        for article in new_articles:
+            if article.id not in existing_ids:
+                existing_articles.append(article)
+                added_count += 1
+
+        logger.info(f"Added {added_count} new articles from RSS feeds")
+
+        # Set the merged cache
+        articles_cache = existing_articles
+
+        # Sort by published date (newest first)
+        articles_cache.sort(key=lambda x: x.published_at, reverse=True)
+
+        # Keep only most recent MAX_ARTICLES
+        if len(articles_cache) > MAX_ARTICLES:
+            articles_cache = articles_cache[:MAX_ARTICLES]
+            logger.info(f"Trimmed to {MAX_ARTICLES} most recent articles")
 
         # Re-classify all articles with improved classification system
-        if articles:
+        if articles_cache:
             logger.info("Re-classifying all articles with improved threat detection...")
-            reclassified_count = 0
             for article in articles_cache:
-                old_type = article.threat_type
                 article.threat_type = classify_threat_type(article)
-                if old_type != article.threat_type:
-                    reclassified_count += 1
-            logger.info(f"Re-classified {reclassified_count} articles with new categories")
 
-            insights_cache = generate_insights(articles)
+            insights_cache = generate_insights(articles_cache)
 
         last_fetch_time = datetime.now(timezone.utc)
-        logger.info(f"Initial fetch complete. Total articles: {len(articles_cache)}")
+        logger.info(f"Startup complete. Total articles in cache: {len(articles_cache)}")
+
+        # Save updated cache to disk
+        save_articles_to_disk()
 
     except Exception as e:
-        logger.error(f"Error during initial fetch: {e}")
+        logger.error(f"Error during startup: {e}")
 
     # Start background task
     asyncio.create_task(update_news_cache())
@@ -249,6 +346,9 @@ async def refresh_data():
             insights_cache = generate_insights(articles_cache)
 
         last_fetch_time = datetime.now(timezone.utc)
+
+        # Save to disk
+        save_articles_to_disk()
 
         return {
             "status": "success",
